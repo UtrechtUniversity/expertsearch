@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Search</title>
+
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+	<link href="google-search.css" rel="stylesheet" type="text/css"/>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" type="text/javascript"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" type="text/javascript"></script>
+
+</head>
+<body>
+
+<div class="container">
+	<div class="col-md-12 ct-content">
+        <div id="task">Your search task will be here</div>
+        <br>
+        
+                        
+		<form id="searchForm" onsubmit="querie()" action="" autocomplete="off">
+			<div class="row">
+				<div class="col-md-8 col-sm-12">
+					<input id="engine" name="se" value="expert" type="hidden"></input>
+					<input id="retrievalunit" name="ru" value="doc" type="hidden"></input>
+					<input id="rank" name="rank" value="doc" type="hidden"></input>
+                    <input id="participant" name="p" value="-1" type="hidden"></input>
+					<input id="txtSearchTerm" name="q" class="search-page-search" placeholder="What are you looking for?" value="">
+				</div>
+				<div class="col-md-2 col-sm-12">
+					<input type="submit" class="search-page-search-submit" value="Search">
+				</div>
+                <div class="col-md-2 col-sm-12">
+					<input id="taskButton" value="Start task" onclick="startTask(this)" style="background-color: #03fc8c;	color:#fff; border:none; text-align: center;">
+				</div>
+
+                    
+			</div>
+        
+		</form>
+		<div id="searchResult"></div>
+		<div id="output" style="overflow:auto;"></div>
+		<div class="pager_controls">
+			<br><br><p>
+				<a onclick="documentTrack('#');" href="#prev" + _pageNumber id="lnkPrev" title="Display previous result page" style="display:none;">Previous Page</a> &nbsp; <a onclick="documentTrack('#');" href="#next" id="lnkNext" title="Display next result page" style="display:none;">Next Page</a>
+			</p>
+		</div>
+		
+		<!-- Number of searches per day will be limited unless google_api_key is specified (https://console.developers.google.com) -->
+		<!-- Add your google_cse_id after registering (https://cse.google.com/) -->
+		<script type="text/javascript">
+			var mGoogleApiKey = ""; //Google API key
+			var mGoogleCustomSearchKeyAll = ""; //This used to be two keys for two different google indices. Not used for the paper
+			var mGoogleCustomSearchKeyiBabs = "";
+		</script> 
+		<script src="search-script.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			var searchParams = new URLSearchParams(window.location.search)
+			//what search engine (se = search engine / ru = retrieval unit) to call - check value of the button as well when you want to change it
+			se = "expert"
+            ru = "doc"
+            var rank = "doc"
+
+			if(searchParams.has('se')){
+				se = searchParams.get('se')
+				$("#engine").val(searchParams.get('se'))
+			}
+            // are we logging search actions for a participant?
+            if(searchParams.has('p')){
+                p = searchParams.get('p')
+                startLogging(p)
+                $("#participant").val(p)
+			//}
+
+            //Let's avoid letting users determine the result type desired (document, expert) from now on
+			//if(searchParams.has('ru')){
+            //    ru = searchParams.get('ru')
+            //    $("#retrievalunit").val(ru)
+			//}
+            //if result type is not indicated, but participant is, use the predefined result type
+            //else if(searchParams.has('p')){
+                        
+                //check how far we are in the experiment
+                hightask = localStorage.getItem('participant ' + p + 'hightask')
+                
+                //First few tasks, do the one indicated
+                //Note: handles synonyms can/exp
+                if(parseInt(hightask) < 4){
+                    //set ranking
+                    rank = localStorage.getItem('participant ' + p + 'ranking1')
+                    
+                    ru = 'exp'
+                    if(localStorage.getItem('participant ' + p + 'interfaces') == 'doc')
+                        ru = 'doc'
+                }
+                //Later few tasks, do the inverse
+                else{
+                    ru = 'doc'
+                    rank = localStorage.getItem('participant ' + p + 'ranking2')
+
+                    if (localStorage.getItem('participant ' + p + 'interfaces') == 'doc')
+                        ru = 'exp'
+                }
+                                        
+                $("#retrievalunit").val(ru)
+            }
+			//get query
+			if(searchParams.has('q')){
+				Search(searchParams.get('q'), se, ru, 0, rank)
+				$("#txtSearchTerm").val(searchParams.get('q'))
+			}
+			
+			//Search($("#txtSearchTerm").val(),0);
+			//console.log('this one')
+		</script>
+						
+    </div>
+</div>	
+
+</body>
+</html>
