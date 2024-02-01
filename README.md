@@ -1,9 +1,13 @@
 # Document- and candidate centric expert search
 This page contains the source code and questionnaire that were created for the CHIIR 2024 paper "Improving expert search effectiveness: Comparing ways to rank and present search results"
 
+Note: There is an error in the text on page 10. The text reads "significant effect of the ranking type on task completion times ... p = .33" \
+where it should read "p = .033"
+
 This work is licensed under a Creative Commons Attribution International 4.0 License.
 
-
+\
+\
 Disclaimer: 
 The code was shared for the purpose of transparency, but it was not rewritten for easy re-usability. The code is fairly messy. In the code we removed individual results (logs, answers questionnaire) we only obtained informed consent for sharing aggregated results.
 
